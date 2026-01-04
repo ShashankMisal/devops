@@ -1,0 +1,19 @@
+<section class="card">
+  <div class="header">
+    <div>
+      <h2>Health</h2>
+      <p class="muted">Frontend and backend status.</p>
+    </div>
+    <button class="button" (click)="loadHealth()">Refresh</button>
+  </div>
+
+  <div class="meta">
+    <span class="badge">Frontend Version: {{ frontendVersion }}</span>
+  </div>
+
+  <div *ngIf="loading" class="muted">Checking backend health...</div>
+
+  <div *ngIf="errorMessage" class="alert">{{ errorMessage }}</div>
+
+  <pre *ngIf="!loading && !errorMessage" class="response">{{ healthResponse | json }}</pre>
+</section>

@@ -1,0 +1,19 @@
+<section class="card">
+  <h2>Add Task</h2>
+  <p class="muted">Log a new DevOps learning item.</p>
+
+  <form (ngSubmit)="submit()" [formGroup]="form" class="form">
+    <label for="title">Title</label>
+    <input id="title" class="input" type="text" formControlName="title" placeholder="e.g. Setup monitoring dashboards">
+
+    <div *ngIf="form.get('title')?.touched && form.get('title')?.invalid" class="alert">
+      Title is required and must be at least 3 characters.
+    </div>
+
+    <div *ngIf="errorMessage" class="alert">{{ errorMessage }}</div>
+
+    <button class="button primary" type="submit" [disabled]="submitting">
+      {{ submitting ? 'Saving...' : 'Add Task' }}
+    </button>
+  </form>
+</section>

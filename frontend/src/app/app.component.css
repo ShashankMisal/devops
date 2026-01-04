@@ -1,0 +1,41 @@
+.nav {
+  background: #0f172a;
+  color: #fff;
+}
+
+.nav-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px 24px;
+}
+
+.brand {
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+.links {
+  display: flex;
+  gap: 16px;
+}
+
+.links a {
+  color: #e2e8f0;
+  padding-bottom: 4px;
+  border-bottom: 2px solid transparent;
+}
+
+.links a.active {
+  color: #fff;
+  border-bottom-color: #38bdf8;
+}
+
+@media (max-width: 640px) {
+  .nav-inner {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
