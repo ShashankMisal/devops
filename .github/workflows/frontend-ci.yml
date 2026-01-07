@@ -1,4 +1,4 @@
-name: Frontend CI
+name: Frontend CI + ECR Push
 
 on:
   pull_request:
@@ -29,6 +29,31 @@ jobs:
         working-directory: frontend
         run: npm run build
 
-      - name: Docker build (frontend)
+      - name: Configure AWS credentials
+        if: github.event_name == 'push'
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        if: github.event_name == 'push'
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build, tag, and push image to ECR
+        if: github.event_name == 'push'
         working-directory: frontend
-        run: docker build -t taskboard-frontend:ci .
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          ECR_REPO: taskboard-frontend
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          IMAGE_URI="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO"
+
+          docker build -t "$IMAGE_URI:$IMAGE_TAG" .
+          docker tag "$IMAGE_URI:$IMAGE_TAG" "$IMAGE_URI:latest"
+
+          docker push "$IMAGE_URI:$IMAGE_TAG"
+          docker push "$IMAGE_URI:latest"
