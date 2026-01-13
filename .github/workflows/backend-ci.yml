@@ -31,10 +31,6 @@ jobs:
         working-directory: backend
         run: npm ci
 
-      - name: Run quick sanity (optional)
-        working-directory: backend
-        run: node src/server.js --help || true
-
       - name: Configure AWS credentials
         if: github.event_name == 'push'
         uses: aws-actions/configure-aws-credentials@v4
