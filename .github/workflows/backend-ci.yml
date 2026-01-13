@@ -1,16 +1,16 @@
-name: Frontend CI + ECR Push
+name: Backend CI + ECR Push
 
 on:
   pull_request:
     branches: ["main"]
     paths:
-      - "frontend/**"
-      - ".github/workflows/frontend-ci.yml"
+      - "backend/**"
+      - ".github/workflows/backend-ci.yml"
   push:
     branches: ["main"]
     paths:
-      - "frontend/**"
-      - ".github/workflows/frontend-ci.yml"
+      - "backend/**"
+      - ".github/workflows/backend-ci.yml"
 
 jobs:
   build:
@@ -19,23 +19,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
 
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: npm
-          cache-dependency-path: frontend/package-lock.json
+          cache-dependency-path: backend/package-lock.json
 
       - name: Install deps
-        working-directory: frontend
+        working-directory: backend
         run: npm ci
 
-      - name: Build Angular
-        working-directory: frontend
-        run: npm run build
+      - name: Run quick sanity (optional)
+        working-directory: backend
+        run: node src/server.js --help || true
 
       - name: Configure AWS credentials
         if: github.event_name == 'push'
@@ -51,11 +49,11 @@ jobs:
 
       - name: Build, tag, and push image to ECR
         if: github.event_name == 'push'
-        working-directory: frontend
+        working-directory: backend
         env:
           AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
-          ECR_REPO: taskboard-frontend
+          ECR_REPO: taskboard-backend
           IMAGE_TAG: ${{ github.sha }}
         run: |
           IMAGE_URI="$AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/$ECR_REPO"

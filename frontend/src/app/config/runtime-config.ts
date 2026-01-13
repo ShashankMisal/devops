@@ -10,7 +10,11 @@ declare global {
 }
 
 export function getApiUrl(): string {
-  return window.__env?.API_URL || 'http://localhost:3000';
+  if (typeof window === 'undefined') {
+    return 'http://localhost:3000';
+  }
+  const apiUrl = window.__env?.API_URL?.trim();
+  return apiUrl || '/api';
 }
 
 export function isMockMode(): boolean {
