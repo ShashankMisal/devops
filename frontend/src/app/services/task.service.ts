@@ -37,7 +37,7 @@ export class TaskService {
       return of(this.mockTasks).pipe(delay(300));
     }
 
-    return this.http.get<Task[]>(`${getApiUrl()}/api/tasks`);
+    return this.http.get<Task[]>(`${getApiUrl()}/tasks`);
   }
 
   addTask(title: string): Observable<Task> {
@@ -52,7 +52,7 @@ export class TaskService {
       return of(newTask).pipe(delay(300));
     }
 
-    return this.http.post<Task>(`${getApiUrl()}/api/tasks`, { title });
+    return this.http.post<Task>(`${getApiUrl()}/tasks`, { title });
   }
 
   getHealth(): Observable<unknown> {
@@ -64,6 +64,6 @@ export class TaskService {
       }).pipe(delay(200));
     }
 
-    return this.http.get<unknown>(`${getApiUrl()}/api/health`);
+    return this.http.get<unknown>(`${getApiUrl()}/health`);
   }
 }
